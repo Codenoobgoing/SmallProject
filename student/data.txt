@@ -1,0 +1,135 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+struct student
+{
+	char name[50];
+	int age;
+	char sex[10];
+	char tel[11];
+};
+
+struct Node
+{
+	//int data;
+	struct student data;
+	struct Node* next;
+};
+
+struct Node* createList()
+{
+	struct Node* headNode = (struct Node*)malloc(sizeof(struct Node));
+	headNode->next = NULL;
+	return headNode;
+}
+
+struct Node* createNewnode(struct student data)
+{
+	struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+	newNode->data = data;
+	newNode->next = NULL;
+	return newNode;
+}
+
+//打印列表
+void printList(struct Node* headNode)
+{
+	struct Node* pMove = headNode->next;
+	//涉及到数据处理
+	printf("姓名\t年龄\t性别\t电话\t\n");
+	while (pMove)
+	{
+		printf("%s\t%d\t%s\t%s\n", pMove->data.name,pMove->data.age,pMove->data.sex,pMove->data.tel);
+		pMove = pMove->next;
+	}	
+	printf("\n");
+}
+
+//插入
+void insertNode(struct Node* headNode,struct student data)
+{
+	struct Node* newNode = createNewnode(data);
+	newNode->next = headNode->next;
+	headNode->next = newNode;
+}
+
+//删除
+void deleteposNode(struct Node* headNode,char* name)
+{
+	struct Node* posNode = headNode->next;
+	struct Node* posFrontNode = headNode;
+	if (posNode == NULL)
+	{
+		printf("数据为空，无法删除！\n");
+		return;
+	}
+	//姓名是字符串，字符串比较：strcmp
+	while (strcmp(posNode->data.name,name))
+	{
+		posFrontNode = posNode;
+		posNode = posNode->next;
+		if (posNode == NULL)
+		{
+			printf("未找到指定位置\n");
+			return;
+		}
+	}
+	posFrontNode->next = posNode->next;
+	free(posNode);
+}
+
+//查找
+struct Node* searchInfo(struct Node* headNode,char* name)
+{
+	struct Node* pMove = headNode->next;
+	if (pMove == NULL)
+	{
+		return NULL;
+	}
+	while (strcmp(pMove->data.name, name))
+	{
+		pMove = pMove->next;
+	}
+	return pMove;
+}
+
+//文件读操作
+void readInfoFromFile(struct Node* headNode, char* filename)
+{
+	//1:打开
+	FILE* fp;
+	struct student data;
+	fp = fopen(filename, "r");
+	if (fp == NULL)
+	{
+		fp = fopen(filename, "w+");
+	}
+
+	//2.读文件
+	while (fscanf(fp, "%s\t%d\t%s\t%s\n", data.name, &data.age, data.sex, data.tel) != EOF)
+	{
+		insertNode(headNode, data);
+
+	}
+	//3.关闭文件
+	fclose(fp);
+}
+
+
+//文件写操作
+void writeInfoToFile(struct Node* headNode, char* filename)
+{
+	FILE* fp;
+	fp = fopen(filename, "w");
+	struct Node* pMove = headNode->next;
+	while(pMove)
+	{
+		fprintf(fp, "%s\t%d\t%s\t%s\n", pMove->data.name, pMove->data.age, pMove->data.sex, pMove->data.tel);
+		pMove = pMove->next;
+	}
+	printf("\n");
+
+	
+
+}

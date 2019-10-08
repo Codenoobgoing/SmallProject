@@ -1,0 +1,90 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<stdio.h>
+#include<stdlib.h>
+#include"data.h"
+void menu()
+{
+	printf("*********************学生管理系统*********************\n");
+	printf("\t\t0.退出系统\n");
+	printf("\t\t1.录入信息\n");
+	printf("\t\t2.浏览信息\n");
+	printf("\t\t3.删除信息\n");
+	printf("\t\t4.查找信息\n");
+	printf("******************************************************\n");
+}
+struct Node* list = createList();
+void KeyDown()
+{
+	int choice = 0;
+	struct student data;
+	struct Node* pMove = NULL;
+	scanf("%d", &choice);
+	switch (choice)
+	{
+	case 0:
+		printf("正常退出\n");
+		system("pause");
+		exit(0);
+		break;
+	case 1:
+		printf("************录入信息*************\n");
+		//插入列表
+		printf("请输入学生姓名，年龄，性别，电话：\n");
+		fflush(stdin);   //清空缓冲区
+		scanf("%s%d%s%s", data.name, &data.age, data.sex, data.tel);
+		insertNode(list, data);
+		break;
+	case 2:
+		printf("************浏览信息*************\n");
+		printList(list);//打印列表
+		break;
+	case 3:
+		printf("************删除信息*************\n");
+		printf("请输入删除的学生姓名：\n");
+		scanf("%s", data.name);
+		deleteposNode(list, data.name);
+		break;
+	case 4:
+		printf("************查找信息*************\n");
+		printf("请输入要查找的学生姓名：\n");
+		scanf("%s", data.name);
+		pMove = searchInfo(list, data.name);
+		if (pMove == NULL)
+		{
+			printf("未找到相关信息\n");
+			system("pause");
+		}
+		else
+		{
+			printf("姓名\t年龄\t性别\t电话\t\n");
+			printf("%s\t%d\t%s\t%s\n", pMove->data.name, pMove->data.age, pMove->data.sex, pMove->data.tel);
+		}
+		break;
+	default:
+		printf("选择错误，重新输入\n");
+		system("pause");
+		break;
+	}
+	writeInfoToFile(list,"1.txt");
+}
+
+int main()
+{
+	readInfoFromFile(list,"1.txt");
+	while (1)
+	{	
+		menu();
+		KeyDown();
+		system("pause");
+		system("cls");
+	}
+	/*struct Node* list = createList();
+	insertNode(list, 1);
+	insertNode(list, 2);
+	insertNode(list, 4);
+	insertNode(list, 7);
+	insertNode(list, 5);
+	printList(list);*/
+
+	return 0;
+}
